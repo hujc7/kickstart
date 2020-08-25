@@ -3,6 +3,8 @@
 // #include <iostream>
 // #include <vector>
 // #include <utility>
+// #include <queue>
+// #include <algorithm>
 using namespace std;
 #define pb push_back
 #define ALL(c) (c).begin(), (c).end()
@@ -17,58 +19,46 @@ using vb = vector<bool>;
 using vvi = vector<vi>;
 using ii = pair<int, int>;
 
-ll check(vi& E, vi& R, ll used) {
-    int m = E.size();
-    vector<ll> until_time(m);
-    ll time = 0;
-
-    for (int i = 0; i < 2*m; ++i) {
-        int index = i % m;
-        if (((used >> index) & 1) == 0) continue;
-        // cout << index << " " << int(((used >> index) & 1) == 1) << "\n";
-        if (time >= until_time[index]) {
-            time += E[index];
-            until_time[index] = time + R[index];
-        } else {
-            return time;
-        }
-    }
-
-    return LLONG_MAX;
-}
-
-int countBits(ll n) {
-    int count = 0;
-    while (n) {
-        count += n & 1;
-        n >>= 1;
-    }
-
-    return count;
-}
-
 pair<int, ll> toys(vi& E, vi& R) {
     // E: enjoy time, time to play the toy
     // R: remember time, cool down time
     int time = 0;
 
     int m = E.size();
-
-    ll res = 0;
-    int count = INT_MAX;
-    for (int i = 1; i < (1 << m); ++i) {
-        ll tmp = check(E, R, i);
-        // cout << bitset<12>(i) << ": " << tmp << "\n";
-        int bits = m - countBits(i);
-        if (tmp > res) {
-            res = tmp;
-            count = bits;
-        } else if (tmp == res) {
-            count = min(count, bits);
-        }
-    }   
     
-    return mp(count, res);
+    ll sum_e = accumulate(ALL(E), 0ll);
+    ll cur_time = sum_e;
+    int count = 0;
+    
+    ll best_time = sum_e;
+    int best_remove = 0;
+
+    priority_queue<pair<ll, int>> pq;
+
+    for (int i = 0; i < m; ++i) {
+        int e = E[i], r = R[i];
+        pq.emplace(e + r, i);
+        cur_time += e;
+
+        while (!pq.empty() && pq.top().fi > sum_e) {
+            auto cur = pq.top();
+            pq.pop();
+            cur_time -= 2*E[cur.se];
+            sum_e -= E[cur.se];
+            count++;
+        }
+
+        if (cur_time > best_time) {
+            best_time = cur_time;
+            best_remove = count;
+        } else if (cur_time == best_time) {
+            best_remove = min(best_remove, count);
+        }
+    }
+
+    if (!pq.empty()) return mp(m - pq.size(), LLONG_MAX);
+
+    return mp(best_remove, best_time);
 }
 
 int main() {
