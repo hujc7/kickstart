@@ -48,7 +48,6 @@ void solve() {
             dp[s][i] = 0;
 
             // -cost, node, stone
-            // pq.push({0, i, c});
             pq.push({0, s, i});
         }
     }
