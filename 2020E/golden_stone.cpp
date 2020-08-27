@@ -26,7 +26,7 @@ void solve() {
     // r: recipes
     int N, M, S, R;
     cin >> N >> M >> S >> R;
-    // cout << N << " " << M << " " << S << " " << R << "\n";
+
     // m lines: streets -> adjacent list
     vector<vi> stts = vector<vi>(N+1);;
     for (int i = 0; i < M; ++i) {
@@ -36,56 +36,51 @@ void solve() {
         stts[e].pb(f);
     }
 
-    // for (int i = 1; i <= N; ++i) {
-    //     cout << i << ": ";
-    //     for (auto c: stts[i]) cout << c << " ";
-    //     cout << "\n";
-    // }
-
-    priority_queue<vector<ll>> pq;
+    priority_queue<vector<ll>, vector<vector<ll>>, greater<>> pq;
 
     // dp[s][n]: minimum cost to get stone s at junction n
     vector<vector<ll>> dp = vector<vector<ll>>(S+1, vector<ll>(N+1, INF));
     for (int i = 1; i <= N; ++i) {
         int num_stones; cin >> num_stones;
         for (int j = 0; j < num_stones; ++j) {
-            int c; cin >> c;
+            int s; cin >> s;
             // get stone c at junction i cost 0 since already available
-            dp[c][i] = 0;
+            dp[s][i] = 0;
 
             // -cost, node, stone
-            pq.push({0, i, c});
+            // pq.push({0, i, c});
+            pq.push({0, s, i});
         }
     }
 
     // r lines: recipies <product, <ingredient, count>>
-    unordered_map<int, unordered_map<int, ll>>  recipies;
-    for (int i = 0; i < R; ++i) {
+    // !!!! one stone could have multiple recipies
+    vector<pair<int, unordered_map<int, ll>>>  recipies(R);
+    for (int r = 0; r < R; ++r) {
         int k; cin >> k;
         unordered_map<int, ll> ingre;
         for (int j = 0; j < k; ++j) {
-            int t; cin >> t;
-            ingre[t]++;
+            int s; cin >> s;
+            ingre[s]++;
         }
         int result_stone; cin >> result_stone;
-        recipies[result_stone] = move(ingre);
+        recipies[r] = mp(result_stone, ingre);
     }
 
-    // walk along street with no stone cost no energy
+    // observation 1: walk along street with no stone cost no energy
     while (!pq.empty()) {
-        auto v = pq.top();
+        auto cur = pq.top();
         pq.pop();
-        // negative cost
-        ll cost = -v[0], node = v[1], stone = v[2];
-        // cout << "Node: " << node << " Stone: " << stone << " cost: " << cost << "\n";
-        if (cost > dp[stone][node]) continue;
+        
+        ll cost = cur[0];
+        int stone = cur[1], node = cur[2];
 
         for (auto neighbor: stts[node]) {
             // can already get stone at neighbor with lower cost
             if (cost + 1 < dp[stone][neighbor]) {
                 // update cost
                 dp[stone][neighbor] = cost + 1;
-                pq.push({-dp[stone][neighbor], neighbor, stone});
+                pq.push({dp[stone][neighbor], stone, neighbor});
             }
         }
 
@@ -98,16 +93,12 @@ void solve() {
                 }
                 if (total_cost < dp[recipy.fi][node]) {
                     dp[recipy.fi][node] = total_cost;
-                    pq.push({-total_cost, node, recipy.fi});
+                    pq.push({dp[recipy.fi][node], recipy.fi, node});
                 }
             }
         }
     }
 
-    // for (auto& r: dp) {
-    //     for (auto c: r) cout << c << " ";
-    //     cout << "\n";
-    // }
     ll res = INF;
     for (auto c: dp[1])
         res = min(res, c);
