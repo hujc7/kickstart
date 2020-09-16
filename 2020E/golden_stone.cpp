@@ -5,10 +5,13 @@
 // #include <utility>
 using namespace std;
 #define pb push_back
-#define ALL(c) (c).begin(), (c).end()
+#define all(c) (c).begin(), (c).end()
 #define mp make_pair
 #define fi first
 #define se second
+#define FOR(i,L,R) for (int i = L; i < R; ++i)
+#define FORE(i,L,R) for (int i = L; i <= R; ++i)
+#define FORR(i,L,R) for (int i = R; i >= L; --i)
 
 using ul = unsigned long;
 using ll = long long;
