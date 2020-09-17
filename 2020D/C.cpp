@@ -58,43 +58,40 @@ template<class T> void print(vector<T>& v) {
 
 // Problem: https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff08/0000000000386edd
 
-double solve(int n, int a, int b, vector<int>& v) {
-    v.insert(v.begin(), -1);
-    double w = 1.0/(n*n);
-    // write(w, "\n");
-    // print(v);
+void dfs(int cur, int interval, vector<int>& path, vector<int>& res, vector<vector<int>>& graph) {
 
+    path.pb(cur);
+    EACH(child, graph[cur]) 
+        dfs(child, interval, path, res, graph);
+    path.pop_back();
+
+    res[cur]++;
+    int m = path.size();
+    if (m >= interval) {
+        res[path[m - interval]] += res[cur];
+    }
+        
+}
+
+double solve(int n, int a, int b, vector<int>& v) {
+    EACH(c, v) c--;
+    
+    vector<vector<int>> graph(n);
+    for (int i = 0; i < n-1; ++i)
+        graph[v[i]].pb(i+1);
+
+    vector<int> va(n), vb(n);
+    
+    vector<int> path;
+    dfs(0, a, path, va, graph);
+    dfs(0, b, path, vb, graph);
+    
     double res = 0;
-    REP(i, 0, n) {
-        unordered_set<int> seen;
-        int count = 0, ath = 0, imp = i;
-        while (imp != -1) {
-            if (ath == 0) {
-                count++;
-                seen.insert(imp);
-                ath = a;
-            }
-            ath--;
-            imp = v[imp];
-        }
-        REP(j, 0, n) {
-            unordered_set<int> jseen(seen);
-            int jcount = count, bth = 0, jmp = j;
-            while (jmp != -1) {
-                if (bth == 0) {
-                    bth = b;
-                    if (jseen.insert(jmp).second)
-                        jcount++;
-                }
-                bth--;
-                jmp = v[jmp];
-            }
-            res += w * jcount;
-            // write(i, j, ": ");
-            // EACH(c, seen)
-            //     write(c, " ");
-            // write("\n");
-        }
+    for (int i = 0; i < n; ++i) {
+        double pa = va[i], pb = vb[i];
+        pa /= n;
+        pb /= n;
+        res += pa + pb - pa*pb;
     }
 
     return res;
@@ -109,13 +106,12 @@ int main() {
         int n, a, b; cin >> n >> a >> b;
         vector<int> v(n-1);
         read(v);
-        EACH(c, v) c--;
 
         // solve
-        
-        auto res = solve(n, a, b, v);
+        double res = solve(n, a, b, v);
         cout << "Case #" << cn << ": ";
-        write(res);
+        cout << fixed << setprecision(9);
+        cout << res;
         cout << "\n";
     }
 

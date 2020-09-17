@@ -11,7 +11,7 @@ using namespace std;
 #define mp make_pair
 #define fi first
 #define se second
-#define REP(i,L,R) for (int i = L; i <  R; ++i)
+#define REP(i,L,R) for (int i = L; i < R; ++i)
 #define PER(i,L,R) for (int i = R; i >= L; --i)
 #define EACH(x, a) for (auto& x: a)
 
@@ -26,16 +26,35 @@ template<class T> void read(T& x) {
     cin >> x;
 }
 template <class H, class... T>
-void read(H& H, T&... t) {
-    cin >> H;
+void read(H& h, T&... t) {
+    cin >> h;
     read(t...);
 }
-template<class A> void read(vector<A>& v) {
+template<class T> void read(vector<T>& v) {
     EACH(x, v)
         read(x);
 }
-
-// Problem: 
+template<class A> void write(A x) {
+	cout << x;
+}
+template<class H, class... T> void write(const H& h, const T&... t) { 
+	write(h);
+	write(t...);
+}
+void print() {
+	write("\n");
+}
+template<class H, class... T> void print(const H& h, const T&... t) { 
+	write(h);
+	if(sizeof...(t))
+		write(' ');
+	print(t...);
+}
+template<class T> void print(vector<T>& v) {
+    EACH(x, v)
+        write(x, " ");
+    write("\n");
+}
 
 void solve() {
     
@@ -47,7 +66,6 @@ int main() {
     int t; cin >> t;
     for (int cn = 1; cn <= t; ++cn) {
         // read input
-
 
         // solve
         cout << "Case #" << cn << ": ";
