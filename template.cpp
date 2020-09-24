@@ -65,8 +65,6 @@ int main() {
 
     int t; cin >> t;
     for (int cn = 1; cn <= t; ++cn) {
-        // read input
-
         // solve
         cout << "Case #" << cn << ": ";
         solve();

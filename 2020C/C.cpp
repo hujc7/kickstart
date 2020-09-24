@@ -57,7 +57,32 @@ template<class T> void print(vector<T>& v) {
 }
 
 void solve() {
-    
+    int m; cin >> m;
+    vector<int> v(m);
+    read(v);
+
+    unordered_map<int, int> seen;
+    seen[0] = 1;
+    int min_sum = 0, max_sum = 0;
+    int sum = 0;
+    long long res = 0;
+    for (int i = 0; i < m; ++i) {
+        sum += v[i];
+        min_sum = min(min_sum, sum);
+        max_sum = max(max_sum, sum);
+
+        for (int j = 0, tmp = 0; (tmp = j*j) <= (max_sum - min_sum); ++j) {
+            auto it = seen.find(sum - tmp);
+            if (it != seen.end())
+                res += it->second;
+        }
+        
+        seen[sum]++;
+
+        // cout << min_sum << " " << max_sum << " " << res << endl;
+    }
+
+    cout << res;
 }
 
 int main() {
@@ -65,8 +90,6 @@ int main() {
 
     int t; cin >> t;
     for (int cn = 1; cn <= t; ++cn) {
-        // read input
-
         // solve
         cout << "Case #" << cn << ": ";
         solve();
