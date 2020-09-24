@@ -11,9 +11,9 @@ using namespace std;
 #define mp make_pair
 #define fi first
 #define se second
-#define REP(i,L,R) for (int i = L; i < R; ++i)
-#define PER(i,L,R) for (int i = R; i >= L; --i)
-#define EACH(x, a) for (auto& x: a)
+#define rep(i,L,R) for (int i = L; i < R; ++i)
+#define rrep(i,L,R) for (int i = R; i > L; --i)
+#define each(x, a) for (auto& x: a)
 
 using ul = unsigned long;
 using ll = long long;
@@ -31,7 +31,7 @@ void read(H& h, T&... t) {
     read(t...);
 }
 template<class T> void read(vector<T>& v) {
-    EACH(x, v)
+    each(x, v)
         read(x);
 }
 template<class A> void write(A x) {
@@ -51,7 +51,7 @@ template<class H, class... T> void print(const H& h, const T&... t) {
 	print(t...);
 }
 template<class T> void print(vector<T>& v) {
-    EACH(x, v)
+    each(x, v)
         write(x, " ");
     write("\n");
 }
