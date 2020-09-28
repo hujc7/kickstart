@@ -11,8 +11,8 @@ using namespace std;
 #define mp make_pair
 #define fi first
 #define se second
-#define REP(i,L,R) for (int i = L; i < R; ++i)
-#define PER(i,L,R) for (int i = R; i >= L; --i)
+#define rep(i,L,R) for (int i = L; i < R; ++i)
+#define per(i,R,L) for (int i = R; i > L; --i)
 #define EACH(x, a) for (auto& x: a)
 
 using ul = unsigned long;
@@ -42,7 +42,8 @@ template<class H, class... T> void write(const H& h, const T&... t) {
 	write(t...);
 }
 void print() {
-	write("\n");
+	// write("\n");
+    cout << endl;
 }
 template<class H, class... T> void print(const H& h, const T&... t) { 
 	write(h);
@@ -53,26 +54,44 @@ template<class H, class... T> void print(const H& h, const T&... t) {
 template<class T> void print(vector<T>& v) {
     EACH(x, v)
         write(x, " ");
-    write("\n");
+    // write("\n");
+    cout << endl;
 }
 
-double dfs(int n, int m, unordered_map<int, int>& state, vector<int>& v) {
-    for (int i = 1; i <= m; ++i) {
+map<vi, double> memo;
 
+double dfs(int n, int m, int k, vi& state, vector<int>& target) {
+    auto it = memo.find(state);
+    if (it != memo.end()) return it->second;
+
+    int good = 0;
+    double res = 0;
+    for (int i = 0, j; i < m; i = j+1) {
+        for (j = i; j+1 < m && state[j] == state[j+1];) ++j;
+        if (state[j] == target[j]) continue;
+        state[j]++;
+        good += j - i + 1;
+        res += dfs(n, m, k, state, target) * (j-i+1);
+        state[j]--;
     }
+    res /= good;  // avergae of rerolls after this roll
+    res += m * 1.0 / good;  // add expectation of current roll
+
+    return memo[state] = res;
 }
 
 void solve() {
+    // n: dies, m: sides, k: groups
     int n, m, k; cin >> n >> m >> k;
-    vector<int> v(k);
-    read(v);
-    unordered_map<int, int> state;
-    unordered_set<int> wanted;
-    for (int i = 1; i <= m; ++i) wanted.insert(i);
-    
-    double res = dfs(n, m, state, v);
+    vector<int> v(m, 0);
+    rep(i, m-k, m) cin >> v[i];
 
-    cout << res;
+    vi state(m, 0);
+    memo.clear();
+    memo[v] = 0;
+    double res = dfs(n, m, k, state, v);
+
+    cout << setprecision(10) << res;
 }
 
 int main() {
