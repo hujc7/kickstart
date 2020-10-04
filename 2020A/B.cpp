@@ -121,7 +121,7 @@ void solve() {
     // each(v, dp) print(v);
 
 
-    cout << *max_element(dp[n].begin(), dp[n].end());
+    cout << dp[n][p];
 }
 
 int main() {
