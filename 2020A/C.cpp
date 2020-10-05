@@ -56,8 +56,32 @@ template<class T> void print(vector<T>& v) {
     write("\n");
 }
 
+int check(int mid, vi& v) {
+    int cnt = 0;
+    for (int i = 1; i < v.size(); ++i) {
+        int diff = v[i] - v[i-1];
+        cnt += (diff - 1) / mid;
+    }
+
+    return cnt;
+}
+
 void solve() {
+    int n, k; cin >> n >> k;
+    vi v(n);
+    read(v);
+
+    int left = 1, right = 0;
+    for (int i = 1; i < n; ++i) 
+        right = max(right, v[i] - v[i-1]);
     
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (check(mid, v) > k) left = mid + 1;
+        else right = mid;
+    }
+
+    cout << left;
 }
 
 int main() {
