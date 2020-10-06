@@ -56,8 +56,66 @@ template<class T> void print(vector<T>& v) {
     write("\n");
 }
 
+struct TrieNode {
+    int count;
+    vector<TrieNode*> child;
+
+    TrieNode() {
+        this->count = 0;
+        child = vector<TrieNode*>(26);
+    }
+};
+
+
+class TrieTree {
+public:
+    TrieNode root;
+    TrieTree() {
+        root = TrieNode();
+    }
+
+    void add(string& word) {
+        TrieNode* tmp = &root;
+        for (auto c: word) {
+            if (!tmp->child[c - sc]) {
+                tmp->child[c - sc] = new TrieNode();
+            }
+            tmp = tmp->child[c - sc];
+        }
+        tmp->count++;
+    }
+    const char sc = 'A';
+};
+
+// pair<score, not_used>
+ii dfs(TrieNode* node, int k, int depth) {
+    if (!node) return mp(0, 0);
+
+    int sum = 0;
+    int count = node->count;
+
+    for (auto tmp: node->child) {
+        auto cur = dfs(tmp, k, depth+1);
+        sum += cur.fi;
+        count += cur.se;
+    }
+
+    int rounds = count / k;
+
+    return mp(sum + rounds * depth, count % k);
+}
+
 void solve() {
-    
+    int n, k; cin >> n >> k;
+    vector<string> v(n);
+    read(v);
+
+    TrieTree tt;
+    for (auto &w: v) {
+        tt.add(w);
+    }   
+
+    cout << dfs(&tt.root, k, 0).fi;   
 }
 
 int main() {
