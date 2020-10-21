@@ -56,32 +56,33 @@ template<class T> void print(vector<T>& v) {
     write("\n");
 }
 
-vector<vector<double>> memo;
-double dfs(int left, int right, vector<ll>& v) {
-    if (left == right) return 0;
-    
-    double w = 1.0 / (right - left);
-
-    double sum = 0;
-    // for (int i = 0; i+1 < v.size(); ++i) {
-    //     double cur = v[i] + v[i+1]; 
-        
-    //     sum += w * ( + dfs(vv));
-    // }
-    for (int i = left; i < right; ++i) {
-        
-    }
-
-    return sum;
-}
-
 void solve() {
     int n; cin >> n;
     vector<ll> v(n);
     read(v);
 
-    memo = vector<vector<double>>(n, vector<double>(n, -1));
-    cout << setprecision(10) << dfs(0, n-1, v);
+    vector<vector<double>> dp(n, vector<double>(n));
+    vector<double> row(n), col(n);
+    vector<ll> prefix(n+1);
+    for (int i = 1; i <= n; ++i)
+        prefix[i] = prefix[i-1] + v[i-1];
+
+    for (int k = 2; k <= n; ++k) {
+        for (int i = 0; i + k <= n; ++i) {
+            int j = i + k -1;
+            dp[i][j] += prefix[j+1] - prefix[i] + 1.0 * (row[i] + col[j]) / (k-1);
+            row[i] += dp[i][j];
+            col[j] += dp[i][j];
+        }
+    }
+
+    // cout << endl;
+    // for (auto &r: dp) {
+    //     for (auto c: r) cout << c << " ";
+    //     cout << endl;
+    // }
+
+    cout << setprecision(10) << dp[0][n-1];
 }
 
 int main() {
