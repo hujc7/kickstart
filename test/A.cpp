@@ -56,8 +56,6 @@ template<class T> void print(vector<T>& v) {
     write("\n");
 }
 
-// code
-
 void solve() {
     
 }
@@ -65,13 +63,25 @@ void solve() {
 int main() {
     ios_base::sync_with_stdio(false), cin.tie(nullptr);
 
-    int t; cin >> t;
-    for (int cn = 1; cn <= t; ++cn) {
-        // solve
-        cout << "Case #" << cn << ": ";
-        solve();
-        cout << "\n";
+    // int t; cin >> t;
+    // for (int cn = 1; cn <= t; ++cn) {
+    //     // solve
+    //     cout << "Case #" << cn << ": ";
+    //     solve();
+    //     cout << "\n";
+    // }
+    vector<int> res;
+    int mod = 1e7;
+    for (int i = 0; i < 2000; ++i) {
+        res.push_back(rand() % mod);
     }
+    cout << "[";
+    for (auto c: res) cout << c << ", ";
+    cout << "]" << endl;
+    cout << "[";
+    for (auto c: res) cout << rand() % c << ", ";
+    cout << "]" << endl;
+
 
     return 0;
 }

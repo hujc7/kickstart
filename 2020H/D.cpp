@@ -56,10 +56,57 @@ template<class T> void print(vector<T>& v) {
     write("\n");
 }
 
-// code
-
 void solve() {
+    int n, q; cin >> n >> q;
+    vector<string> v(n);
+    read(v);
+
+    vector<int> qs(q), qt(q);
+    for (int i = 0; i < q; ++i) {
+        int t1, t2; cin >> t1 >> t2;
+        // 1 indexed
+        qs[i] = t1-1;
+        qt[i] = t2-1;
+    }
     
+    vector<vector<int>> agd(26, vector<int>(26, INT_MAX));
+    for (auto &s: v) {
+        unordered_set<char> chars(s.begin(), s.end());
+        vector<char> all_char(chars.begin(), chars.end());
+        for (int i = 0; i < all_char.size(); ++i) {
+            for (int j = i+1; j < all_char.size(); ++j) {
+                int a = all_char[i] - 'A', b = all_char[j] - 'A';
+                agd[a][b] = agd[b][a] = 1;
+            }
+        }
+    }
+
+    for (int i = 0; i < 26; ++i) agd[i][i] = 0;
+
+    for (int k = 0; k < 26; ++k) {
+        for (int i = 0; i < 26; ++i) {
+            for (int j = 0; j < 26; ++j) {
+                if (agd[i][k] == INT_MAX || agd[k][j] == INT_MAX) continue;
+                agd[i][j] = min(agd[i][j], agd[i][k] + agd[k][j]);
+            }
+        }
+    }
+
+    for (int i = 0; i < q; ++i) {
+        string start = v[qs[i]];
+        string end = v[qt[i]];
+        
+        int step = INT_MAX;
+        for (auto ca: start) {
+            int intca = ca - 'A';
+            for (auto cb: end) {
+                int intcb = cb - 'A';
+                step = min(step, agd[intca][intcb]);
+            }
+        }
+
+        cout << (step == INT_MAX ? -1 : step + 2) << " ";
+    }
 }
 
 int main() {

@@ -56,10 +56,18 @@ template<class T> void print(vector<T>& v) {
     write("\n");
 }
 
-// code
-
+// 1. complete, go to next
+// 2. moving to previous
+// 3. exiting the game
 void solve() {
-    
+    int n, k, s; cin >> n >> k >> s;
+
+    ll pre = k-1;
+    // restart
+    ll r1 = n + 1;
+    ll r2 = (k - s) + (n - s + 1);
+
+    cout << pre + min(r1, r2);
 }
 
 int main() {

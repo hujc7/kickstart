@@ -56,10 +56,63 @@ template<class T> void print(vector<T>& v) {
     write("\n");
 }
 
-// code
+// even position digit -> even
+// odd position digit -> odd
+// bool smaller(string& a, string& b) {
+
+// }
+bool isboring(int n) {
+    string sn = to_string(n);
+    for (int i = 0; i < sn.size(); ++i) {
+        if (i % 2 == 0 && (sn[i] - '0') % 2 != 1) return false;
+        else if (i % 2 == 1 && (sn[i] - '0') % 2 != 0) return false; 
+    }
+
+    return true;
+}
+// even: 0, odd: 1
+ll dfs(int index, string& n, bool smaller) {
+    int m = n.size();
+    if (smaller) return pow(5, m-index);
+    if (index == n.size()) return 1;
+
+    int odd = (index % 2 == 0);
+    int high = smaller ? 9: (n[index] - '0');
+
+    ll res = 0;
+    for (int i = 0; i <= high; ++i) { 
+        if (i % 2 != odd) continue;
+        res += dfs(index+1, n, i < high);
+    }
+
+    return res;
+}
+
+ll boring_num(ll n) {
+    string sn = to_string(n);
+
+    ll res = 0;
+    // vector<int> dp(19);
+    for (int i = 1; i < sn.size(); ++i) res += powl(5, i);
+    // cout << res << " ";
+    res += dfs(0, sn, false);
+    // cout << res << endl;
+    return res;
+}
 
 void solve() {
-    
+    ll l, r; cin >> l >> r;
+    // cout << endl;
+
+    // vector<int> bb;
+    // for (int i = l; i <= r; ++i)
+    //     if (isboring(i)) bb.push_back(i);
+    // for (int i = 0; i < bb.size(); ++i) {
+    //     cout << bb[i] << " "; 
+    // }
+    // cout << ": " << bb.size() << endl;
+
+    cout << boring_num(r) - boring_num(l-1);
 }
 
 int main() {
