@@ -58,45 +58,35 @@ template<class T> void print(vector<T>& v) {
 
 // even position digit -> even
 // odd position digit -> odd
-// bool smaller(string& a, string& b) {
 
-// }
-bool isboring(int n) {
-    string sn = to_string(n);
-    for (int i = 0; i < sn.size(); ++i) {
-        if (i % 2 == 0 && (sn[i] - '0') % 2 != 1) return false;
-        else if (i % 2 == 1 && (sn[i] - '0') % 2 != 0) return false; 
-    }
-
-    return true;
-}
-// even: 0, odd: 1
+ll dp[20][2];
 ll dfs(int index, string& n, bool smaller) {
-    int m = n.size();
-    if (smaller) return pow(5, m-index);
+    // if (smaller) return pow(5, m-index);
     if (index == n.size()) return 1;
+    ll &val = dp[index][smaller];
+    if (val != -1) return val;
 
     int odd = (index % 2 == 0);
     int high = smaller ? 9: (n[index] - '0');
 
     ll res = 0;
-    for (int i = 0; i <= high; ++i) { 
-        if (i % 2 != odd) continue;
-        res += dfs(index+1, n, i < high);
+    for (int i = odd; i <= high; i += 2) { 
+        res += dfs(index+1, n, smaller || i < high);
     }
 
-    return res;
+    return val = res;
 }
 
 ll boring_num(ll n) {
     string sn = to_string(n);
 
+    memset(dp, -1, sizeof(dp));
+    
     ll res = 0;
-    // vector<int> dp(19);
-    for (int i = 1; i < sn.size(); ++i) res += powl(5, i);
-    // cout << res << " ";
-    res += dfs(0, sn, false);
-    // cout << res << endl;
+    for (int i = 0; i < sn.size(); ++i) {
+        res += dfs(i, sn, i != 0);
+    }
+
     return res;
 }
 
