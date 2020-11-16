@@ -57,74 +57,95 @@ template<class T> void print(vector<T>& v) {
 }
 
 // one point can have multiple players
-const ll offset = 1e5;
-const ll INF = 1e9+7;
-const ll NINF = -1e9-7;
+// const ll offset = 1e5;
+// const ll INF = 1e9+7;
+// const ll NINF = -1e9-7;
 
-ll check_x(ll mid, vector<ll>& x) {
-    ll res = 0;
-    for (int i = 0; i < x.size(); ++i) {
-        res += llabs(mid + i - x[i]);
-    }
+// ll check_x(ll mid, vector<ll>& x) {
+//     ll res = 0;
+//     for (int i = 0; i < x.size(); ++i) {
+//         res += llabs(mid + i - x[i]);
+//     }
 
-    return res;
-}
+//     return res;
+// }
 
-// binary search start point
-ll BS_x(vector<ll>& x) {
-    ll left = x.front() - offset, right = x.back() + offset;
-    while (left < right) {
-        ll l1 = left + (right - left) / 3;
-        ll r1 = left + 2 * (right - left) / 3;
-        ll tl1 = check_x(l1, x);
-        ll tr1 = check_x(r1, x);
-        if (tl1 > tr1) {
-            left = l1 + 1;
-        } else {
-            right = r1;
-        }
-    }
+// // binary search start point
+// ll BS_x(vector<ll>& x) {
+//     ll left = x.front() - offset, right = x.back() + offset;
+//     while (left < right) {
+//         ll l1 = left + (right - left) / 3;
+//         ll r1 = left + 2 * (right - left) / 3;
+//         ll tl1 = check_x(l1, x);
+//         ll tr1 = check_x(r1, x);
+//         if (tl1 > tr1) {
+//             left = l1 + 1;
+//         } else {
+//             right = r1;
+//         }
+//     }
 
-    return check_x(left, x);
-}
+//     return check_x(left, x);
+// }
 
-ll check_y(ll mid, vector<ll>& y) {
-    ll res = 0;
-    for (auto c: y) res += llabs(c - mid);
+// ll check_y(ll mid, vector<ll>& y) {
+//     ll res = 0;
+//     for (auto c: y) res += llabs(c - mid);
 
-    return res;
-}
+//     return res;
+// }
 
-ll BS_y(vector<ll>& y) {
-    ll left = y.front(), right = y.back();
-    while (left < right) {
-        ll l1 = left + (right - left) / 3;
-        ll r1 = left + 2 * (right - left) / 3;
-        ll tl1 = check_y(l1, y);
-        ll tr1 = check_y(r1, y);
-        if (tl1 > tr1) {
-            left = l1 + 1;
-        } else {
-            right = r1;
-        }
-    }
+// ll BS_y(vector<ll>& y) {
+//     ll left = y.front(), right = y.back();
+//     while (left < right) {
+//         ll l1 = left + (right - left) / 3;
+//         ll r1 = left + 2 * (right - left) / 3;
+//         ll tl1 = check_y(l1, y);
+//         ll tr1 = check_y(r1, y);
+//         if (tl1 > tr1) {
+//             left = l1 + 1;
+//         } else {
+//             right = r1;
+//         }
+//     }
 
-    return check_y(left, y);
-}
+//     return check_y(left, y);
+// }
 
+// void solve() {
+//     int n; cin >> n;
+//     // vector<vector<int>> v(n, vector<int>(2));
+//     vector<ll> px(n), py(n);
+//     for (int i = 0; i < n; ++i) cin >> px[i] >> py[i];
+//     sort(px.begin(), px.end());
+//     sort(py.begin(), py.end());
+//     // cout << endl;
+//     ll rx = BS_x(px);
+//     ll ry = BS_y(py);
+//     // cout << rx << " " << ry << endl;
+//     cout << rx + ry;
+//     // cout << BS_x(px) + BS_y(py);
+// }
+
+// Solution 2
 void solve() {
     int n; cin >> n;
-    // vector<vector<int>> v(n, vector<int>(2));
     vector<ll> px(n), py(n);
     for (int i = 0; i < n; ++i) cin >> px[i] >> py[i];
     sort(px.begin(), px.end());
     sort(py.begin(), py.end());
-    // cout << endl;
-    ll rx = BS_x(px);
-    ll ry = BS_y(py);
-    // cout << rx << " " << ry << endl;
-    cout << rx + ry;
-    // cout << BS_x(px) + BS_y(py);
+
+    int median_y = (py[(n-1)/2] + py[n/2]) / 2;
+    vector<ll> px2(n);
+    for (int i = 0; i < n; ++i) px2[i] = px[i] - i;
+    sort(px2.begin(), px2.end());
+    int median_x = (px2[(n-1)/2] + px2[n/2]) / 2;
+
+    ll res = 0;
+    for (auto c: py) res += abs(c - median_y);
+    for (int i = 0; i < n; ++i) res += abs(px[i] - (median_x + i));
+
+    cout << res;
 }
 
 int main() {

@@ -92,15 +92,6 @@ ll boring_num(ll n) {
 
 void solve() {
     ll l, r; cin >> l >> r;
-    // cout << endl;
-
-    // vector<int> bb;
-    // for (int i = l; i <= r; ++i)
-    //     if (isboring(i)) bb.push_back(i);
-    // for (int i = 0; i < bb.size(); ++i) {
-    //     cout << bb[i] << " "; 
-    // }
-    // cout << ": " << bb.size() << endl;
 
     cout << boring_num(r) - boring_num(l-1);
 }
